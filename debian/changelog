@@ -1,0 +1,23 @@
+capi-telephony-network-info (0.1.0-7) unstable; urgency=low
+
+  * Because flight mode is removed from public Emulator, network_info_get_service_state() is modified
+  * Git: api/network-info
+  * Tag: capi-telephony-network-info_0.1.0-7
+
+ -- ByungWoo Lee <bw1212.lee@samsung.com>  Fri, 06 Jan 2012 17:10:38 +0900
+
+capi-telephony-network-info (0.1.0-6) unstable; urgency=low
+
+  * Update version
+  * Git: api/network-info
+  * Tag: capi-telephony-network-info_0.1.0-6
+
+ -- ByungWoo Lee <bw1212.lee@samsung.com>  Thu, 15 Dec 2011 13:15:30 +0900
+
+capi-telephony-network-info (0.0.1-1) unstable; urgency=low
+
+  * Initial release. 
+  * Git: api/network-info
+  * Tag: capi-telephony-network-info_0.0.1-1
+
+ -- ByungWoo Lee <bw1212.lee@samsung.com>  Wed, 07 Dec 2011 12:44:57 +0900
