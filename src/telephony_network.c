@@ -51,12 +51,12 @@ static telephony_cb_data rssi_cb = {NETWORK_INFO_RSSI_0, NULL, NULL};
 static telephony_cb_data roaming_cb = {false, NULL, NULL};
 
 // Callback function adapter
-void _telephony_service_changed_cb_adapter(keynode_t *node, void* user_data);
-void _cell_id_changed_cb_adapter(keynode_t *node, void* user_data);
-void _rssi_changed_cb_adapter(keynode_t *node, void* user_data);
-void _roaming_changed_cb_adapter(keynode_t *node, void* user_data);
-char* _convert_error_code_to_string(network_info_error_e error_code);
-int _check_service_state(char* function_name);
+static void __telephony_service_changed_cb_adapter(keynode_t *node, void* user_data);
+static void __cell_id_changed_cb_adapter(keynode_t *node, void* user_data);
+static void __rssi_changed_cb_adapter(keynode_t *node, void* user_data);
+static void __roaming_changed_cb_adapter(keynode_t *node, void* user_data);
+static char* __convert_error_code_to_string(network_info_error_e error_code);
+static int __check_service_state(char* function_name);
 
 // Internal Macros
 #define NETWORK_INFO_CHECK_INPUT_PARAMETER(arg) \
@@ -73,7 +73,7 @@ int network_info_get_lac(int* lac)
 
 	NETWORK_INFO_CHECK_INPUT_PARAMETER(lac);
 
-	ret = _check_service_state((char*)__FUNCTION__);
+	ret = __check_service_state((char*)__FUNCTION__);
 	if( ret != NETWORK_INFO_ERROR_NONE )
 	{
 		return ret;
@@ -95,7 +95,7 @@ int network_info_get_cell_id(int* cell_id)
 	
 	NETWORK_INFO_CHECK_INPUT_PARAMETER(cell_id);
 	
-	ret = _check_service_state((char*)__FUNCTION__);
+	ret = __check_service_state((char*)__FUNCTION__);
 	if( ret != NETWORK_INFO_ERROR_NONE )
 	{
 		return ret;
@@ -117,7 +117,7 @@ int network_info_get_rssi(network_info_rssi_e* rssi)
 	
 	NETWORK_INFO_CHECK_INPUT_PARAMETER(rssi);
 	
-	ret = _check_service_state((char*)__FUNCTION__);
+	ret = __check_service_state((char*)__FUNCTION__);
 	if( ret != NETWORK_INFO_ERROR_NONE )
 	{
 		return ret;
@@ -140,7 +140,7 @@ int network_info_is_roaming(bool* is_roaming)
 	
 	NETWORK_INFO_CHECK_INPUT_PARAMETER(is_roaming);
 	
-	ret = _check_service_state((char*)__FUNCTION__);
+	ret = __check_service_state((char*)__FUNCTION__);
 	if( ret != NETWORK_INFO_ERROR_NONE )
 	{
 		return ret;
@@ -174,7 +174,7 @@ int network_info_get_mcc(char** mcc)
 
 	NETWORK_INFO_CHECK_INPUT_PARAMETER(mcc);
 	
-	ret = _check_service_state((char*)__FUNCTION__);
+	ret = __check_service_state((char*)__FUNCTION__);
 	if( ret != NETWORK_INFO_ERROR_NONE )
 	{
 		return ret;
@@ -209,7 +209,7 @@ int network_info_get_mnc(char** mnc)
 	
 	NETWORK_INFO_CHECK_INPUT_PARAMETER(mnc);
 	
-	ret = _check_service_state((char*)__FUNCTION__);
+	ret = __check_service_state((char*)__FUNCTION__);
 	if( ret != NETWORK_INFO_ERROR_NONE )
 	{
 		return ret;
@@ -242,7 +242,7 @@ int network_info_get_provider_name(char** provider_name)
 	
 	NETWORK_INFO_CHECK_INPUT_PARAMETER(provider_name);
 	
-	ret = _check_service_state((char*)__FUNCTION__);
+	ret = __check_service_state((char*)__FUNCTION__);
 	if( ret != NETWORK_INFO_ERROR_NONE )
 	{
 		return ret;
@@ -268,7 +268,7 @@ int network_info_get_type(network_info_type_e* network_type)
 	
 	NETWORK_INFO_CHECK_INPUT_PARAMETER(network_type);
 	
-	ret = _check_service_state((char*)__FUNCTION__);
+	ret = __check_service_state((char*)__FUNCTION__);
 	if( ret != NETWORK_INFO_ERROR_NONE )
 	{
 		return ret;
@@ -367,13 +367,13 @@ int network_info_set_service_state_changed_cb(network_info_service_state_changed
 	ret = network_info_get_service_state(&service_state);
 	if( ret != NETWORK_INFO_ERROR_NONE )
 	{
-		LOGE("[%s] %s(0x%08x) : fail to get current service state", __FUNCTION__, _convert_error_code_to_string(ret), ret);
+		LOGE("[%s] %s(0x%08x) : fail to get current service state", __FUNCTION__, __convert_error_code_to_string(ret), ret);
 		return ret;
 	}
 
 	if( flight_mode_is_registered == false) 
 	{
-		if( vconf_notify_key_changed(VCONFKEY_SETAPPL_FLIGHT_MODE_BOOL, (vconf_callback_fn)_telephony_service_changed_cb_adapter, NULL) != 0 )
+		if( vconf_notify_key_changed(VCONFKEY_SETAPPL_FLIGHT_MODE_BOOL, (vconf_callback_fn)__telephony_service_changed_cb_adapter, NULL) != 0 )
 		{
 			LOGE("[%s] OPERATION_FAILED(0x%08x) : fail to register callback of flight mode", __FUNCTION__, NETWORK_INFO_ERROR_OPERATION_FAILED);
 			return NETWORK_INFO_ERROR_OPERATION_FAILED;
@@ -383,7 +383,7 @@ int network_info_set_service_state_changed_cb(network_info_service_state_changed
 
 	if( svctype_is_registered == false )
 	{
-		if(vconf_notify_key_changed(VCONFKEY_TELEPHONY_SVCTYPE, (vconf_callback_fn)_telephony_service_changed_cb_adapter, NULL) != 0)
+		if(vconf_notify_key_changed(VCONFKEY_TELEPHONY_SVCTYPE, (vconf_callback_fn)__telephony_service_changed_cb_adapter, NULL) != 0)
 		{
 			LOGE("[%s] OPERATION_FAILED(0x%08x) : fail to register callback of service type", __FUNCTION__, NETWORK_INFO_ERROR_OPERATION_FAILED);
 			return NETWORK_INFO_ERROR_OPERATION_FAILED;
@@ -393,7 +393,7 @@ int network_info_set_service_state_changed_cb(network_info_service_state_changed
 
 	if( svc_cs_is_registered == false )
 	{
-		if(vconf_notify_key_changed(VCONFKEY_TELEPHONY_SVC_CS, (vconf_callback_fn)_telephony_service_changed_cb_adapter, NULL) != 0)
+		if(vconf_notify_key_changed(VCONFKEY_TELEPHONY_SVC_CS, (vconf_callback_fn)__telephony_service_changed_cb_adapter, NULL) != 0)
 		{
 			LOGE("[%s] OPERATION_FAILED(0x%08x) : fail to register callback of circuit service", __FUNCTION__, NETWORK_INFO_ERROR_OPERATION_FAILED);
 			return NETWORK_INFO_ERROR_OPERATION_FAILED;
@@ -412,7 +412,7 @@ int network_info_unset_service_state_changed_cb()
 {
 	if( flight_mode_is_registered == true )
 	{
-		if( vconf_ignore_key_changed(VCONFKEY_SETAPPL_FLIGHT_MODE_BOOL, (vconf_callback_fn)_telephony_service_changed_cb_adapter) != 0 )
+		if( vconf_ignore_key_changed(VCONFKEY_SETAPPL_FLIGHT_MODE_BOOL, (vconf_callback_fn)__telephony_service_changed_cb_adapter) != 0 )
 		{
 			LOGE("[%s] OPERATION_FAILED(0x%08x) : fail to unregister callback of flight mode", __FUNCTION__, NETWORK_INFO_ERROR_OPERATION_FAILED);
 			return NETWORK_INFO_ERROR_OPERATION_FAILED;
@@ -422,7 +422,7 @@ int network_info_unset_service_state_changed_cb()
 
 	if( svctype_is_registered == true )
 	{
-		if(vconf_ignore_key_changed(VCONFKEY_TELEPHONY_SVCTYPE, (vconf_callback_fn)_telephony_service_changed_cb_adapter) != 0)
+		if(vconf_ignore_key_changed(VCONFKEY_TELEPHONY_SVCTYPE, (vconf_callback_fn)__telephony_service_changed_cb_adapter) != 0)
 		{
 			LOGE("[%s] OPERATION_FAILED(0x%08x) : fail to unregister callback of service type", __FUNCTION__, NETWORK_INFO_ERROR_OPERATION_FAILED);
 			return NETWORK_INFO_ERROR_OPERATION_FAILED;
@@ -432,7 +432,7 @@ int network_info_unset_service_state_changed_cb()
 
 	if( svc_cs_is_registered == true )
 	{
-		if(vconf_ignore_key_changed(VCONFKEY_TELEPHONY_SVC_CS, (vconf_callback_fn)_telephony_service_changed_cb_adapter) != 0)
+		if(vconf_ignore_key_changed(VCONFKEY_TELEPHONY_SVC_CS, (vconf_callback_fn)__telephony_service_changed_cb_adapter) != 0)
 		{
 			LOGE("[%s] OPERATION_FAILED(0x%08x) : fail to unregister callback of circuit service", __FUNCTION__, NETWORK_INFO_ERROR_OPERATION_FAILED);
 			return NETWORK_INFO_ERROR_OPERATION_FAILED;
@@ -458,13 +458,13 @@ int network_info_set_cell_id_changed_cb(network_info_cell_id_changed_cb callback
 	ret = network_info_get_cell_id(&cell_id);
 	if( ret != NETWORK_INFO_ERROR_NONE )
 	{
-		LOGE("[%s] %s(0x%08x) : fail to get current CELL ID", __FUNCTION__, _convert_error_code_to_string(ret), ret);
+		LOGE("[%s] %s(0x%08x) : fail to get current CELL ID", __FUNCTION__, __convert_error_code_to_string(ret), ret);
 		return ret;
 	}
 
 	if( cell_id_is_registered == false) 
 	{		
-		if( vconf_notify_key_changed(VCONFKEY_TELEPHONY_CELLID, (vconf_callback_fn)_cell_id_changed_cb_adapter, NULL) != 0 )
+		if( vconf_notify_key_changed(VCONFKEY_TELEPHONY_CELLID, (vconf_callback_fn)__cell_id_changed_cb_adapter, NULL) != 0 )
 		{
 			LOGE("[%s] OPERATION_FAILED(0x%08x) : fail to register callback function", __FUNCTION__, NETWORK_INFO_ERROR_OPERATION_FAILED);
 			return NETWORK_INFO_ERROR_OPERATION_FAILED;
@@ -484,7 +484,7 @@ int network_info_unset_cell_id_changed_cb()
 {
 	if( cell_id_is_registered == true )
 	{
-		if( vconf_ignore_key_changed(VCONFKEY_TELEPHONY_CELLID, (vconf_callback_fn)_cell_id_changed_cb_adapter) != 0 )
+		if( vconf_ignore_key_changed(VCONFKEY_TELEPHONY_CELLID, (vconf_callback_fn)__cell_id_changed_cb_adapter) != 0 )
 		{
 			LOGE("[%s] OPERATION_FAILED(0x%08x) : fail to unregister callback function", __FUNCTION__, NETWORK_INFO_ERROR_OPERATION_FAILED);
 			return NETWORK_INFO_ERROR_OPERATION_FAILED;
@@ -509,13 +509,13 @@ int network_info_set_rssi_changed_cb(network_info_rssi_changed_cb callback, void
 	ret = network_info_get_rssi(&rssi);
 	if( ret != NETWORK_INFO_ERROR_NONE )
 	{
-		LOGE("[%s] %s(0x%08x) : fail to get current RSSI", __FUNCTION__, _convert_error_code_to_string(ret), ret);
+		LOGE("[%s] %s(0x%08x) : fail to get current RSSI", __FUNCTION__, __convert_error_code_to_string(ret), ret);
 		return ret;
 	}
 
 	if( rssi_is_registered == false) 
 	{		
-		if( vconf_notify_key_changed(VCONFKEY_TELEPHONY_RSSI, (vconf_callback_fn)_rssi_changed_cb_adapter, NULL) != 0 )
+		if( vconf_notify_key_changed(VCONFKEY_TELEPHONY_RSSI, (vconf_callback_fn)__rssi_changed_cb_adapter, NULL) != 0 )
 		{
 			LOGE("[%s] OPERATION_FAILED(0x%08x) : fail to register callback function", __FUNCTION__, NETWORK_INFO_ERROR_OPERATION_FAILED);
 			return NETWORK_INFO_ERROR_OPERATION_FAILED;
@@ -535,7 +535,7 @@ int network_info_unset_rssi_changed_cb()
 {
 	if( rssi_is_registered == true )
 	{
-		if( vconf_ignore_key_changed(VCONFKEY_TELEPHONY_RSSI, (vconf_callback_fn)_rssi_changed_cb_adapter) != 0 )
+		if( vconf_ignore_key_changed(VCONFKEY_TELEPHONY_RSSI, (vconf_callback_fn)__rssi_changed_cb_adapter) != 0 )
 		{
 			LOGE("[%s] OPERATION_FAILED(0x%08x) : fail to unregister callback function", __FUNCTION__, NETWORK_INFO_ERROR_OPERATION_FAILED);
 			return NETWORK_INFO_ERROR_OPERATION_FAILED;
@@ -560,13 +560,13 @@ int network_info_set_roaming_state_changed_cb(network_info_roaming_state_changed
 	ret = network_info_is_roaming(&is_roaming);
 	if( ret != NETWORK_INFO_ERROR_NONE )
 	{
-		LOGE("[%s] %s(0x%08x) : fail to get current roaming state", __FUNCTION__, _convert_error_code_to_string(ret), ret);
+		LOGE("[%s] %s(0x%08x) : fail to get current roaming state", __FUNCTION__, __convert_error_code_to_string(ret), ret);
 		return ret;
 	}
 
 	if( roaming_is_registered == false) 
 	{		
-		if( vconf_notify_key_changed(VCONFKEY_TELEPHONY_SVC_ROAM, (vconf_callback_fn)_roaming_changed_cb_adapter, NULL) != 0 )
+		if( vconf_notify_key_changed(VCONFKEY_TELEPHONY_SVC_ROAM, (vconf_callback_fn)__roaming_changed_cb_adapter, NULL) != 0 )
 		{
 			LOGE("[%s] OPERATION_FAILED(0x%08x) : fail to register callback function", __FUNCTION__, NETWORK_INFO_ERROR_OPERATION_FAILED);
 			return NETWORK_INFO_ERROR_OPERATION_FAILED;
@@ -586,7 +586,7 @@ int network_info_unset_roaming_state_changed_cb()
 {
 	if( roaming_is_registered == true )
 	{
-		if( vconf_ignore_key_changed(VCONFKEY_TELEPHONY_SVC_ROAM, (vconf_callback_fn)_roaming_changed_cb_adapter) != 0 )
+		if( vconf_ignore_key_changed(VCONFKEY_TELEPHONY_SVC_ROAM, (vconf_callback_fn)__roaming_changed_cb_adapter) != 0 )
 		{
 			LOGE("[%s] OPERATION_FAILED(0x%08x) : fail to unregister callback function", __FUNCTION__, NETWORK_INFO_ERROR_OPERATION_FAILED);
 			return NETWORK_INFO_ERROR_OPERATION_FAILED;
@@ -601,7 +601,7 @@ int network_info_unset_roaming_state_changed_cb()
 	return NETWORK_INFO_ERROR_NONE;	
 }
 
-void _telephony_service_changed_cb_adapter(keynode_t *node, void* user_data) 
+static void __telephony_service_changed_cb_adapter(keynode_t *node, void* user_data) 
 {
 	network_info_service_state_e status = NETWORK_INFO_SERVICE_STATE_OUT_OF_SERVICE;
 
@@ -620,7 +620,7 @@ void _telephony_service_changed_cb_adapter(keynode_t *node, void* user_data)
 	}
 }
 
-void _cell_id_changed_cb_adapter(keynode_t *node, void* user_data) 
+static void __cell_id_changed_cb_adapter(keynode_t *node, void* user_data) 
 {
 	int cell_id = 0;
 
@@ -641,7 +641,7 @@ void _cell_id_changed_cb_adapter(keynode_t *node, void* user_data)
 	}
 }
 
-void _rssi_changed_cb_adapter(keynode_t *node, void* user_data) 
+static void __rssi_changed_cb_adapter(keynode_t *node, void* user_data) 
 {
 	network_info_rssi_e rssi = 0;
 
@@ -660,7 +660,7 @@ void _rssi_changed_cb_adapter(keynode_t *node, void* user_data)
 	}
 }
 
-void _roaming_changed_cb_adapter(keynode_t *node, void* user_data) 
+static void __roaming_changed_cb_adapter(keynode_t *node, void* user_data) 
 {
 	bool is_roaming = 0;
 
@@ -680,7 +680,7 @@ void _roaming_changed_cb_adapter(keynode_t *node, void* user_data)
 }
 
 
-char* _convert_error_code_to_string(network_info_error_e error_code)
+static char* __convert_error_code_to_string(network_info_error_e error_code)
 {
 	switch(error_code)
 	{
@@ -697,7 +697,7 @@ char* _convert_error_code_to_string(network_info_error_e error_code)
 	}
 }
 
-int _check_service_state(char* function_name)
+static int __check_service_state(char* function_name)
 {
 	network_info_service_state_e service_state = NETWORK_INFO_SERVICE_STATE_OUT_OF_SERVICE;
 

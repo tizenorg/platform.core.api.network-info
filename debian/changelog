@@ -1,3 +1,11 @@
+capi-telephony-network-info (0.1.0-9) unstable; urgency=low
+
+  * Convert internal symbol to static
+  * Git: slp/api/network-info
+  * Tag: capi-telephony-network-info_0.1.0-9 
+
+ -- ByungWoo Lee <bw1212.lee@samsung.com>  Mon, 20 Feb 2012 15:53:46 +0900
+
 capi-telephony-network-info (0.1.0-8) unstable; urgency=low
 
   * Add versioning of library
