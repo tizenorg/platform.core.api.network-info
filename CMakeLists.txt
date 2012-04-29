@@ -8,6 +8,7 @@ SET(description "Telephony Network Information Framework")
 SET(service "telephony")
 SET(submodule "network-info")
 SET(dependents "dlog vconf glib-2.0 capi-base-common")
+SET(pc_dependents "capi-base-common")
 SET(deb_dependents "dlog-dev libvconf-dev libglib2.0-dev capi-base-common-dev")
 
 SET(Services 
@@ -93,9 +94,8 @@ INSTALL(
         )
 
 SET(PC_NAME ${fw_name})
-SET(PC_REQUIRED ${dependents})
+SET(PC_REQUIRED ${pc_dependents})
 SET(PC_LDFLAGS -l${fw_name})
-SET(PC_CFLAGS -I\${includedir}/${service})
 
 CONFIGURE_FILE(
     capi-telephony-network-info.pc.in

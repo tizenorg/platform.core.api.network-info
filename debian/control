@@ -6,12 +6,12 @@ Build-Depends: debhelper (>= 5), dlog-dev, libvconf-dev, libglib2.0-dev, capi-ba
 
 Package: capi-telephony-network-info
 Architecture: any
-Depends: ${shilbs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: A Telephony Network Information library in Tizen Native API
 
 Package: capi-telephony-network-info-dev
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, capi-telephony-network-info (= ${Source-Version}), dlog-dev, libvconf-dev, libglib2.0-dev, capi-base-common-dev
+Depends: ${shlibs:Depends}, ${misc:Depends}, capi-telephony-network-info (= ${Source-Version}), capi-base-common-dev
 Description: A Telephony Network Information library in Tizen Native API (DEV)
 
 Package: capi-telephony-network-info-dbg

@@ -18,7 +18,6 @@
 #ifndef __TIZEN_TELEPHONY_NETWORK_INFO_H__
 #define __TIZEN_TELEPHONY_NETWORK_INFO_H__
 
-#include <stdbool.h>
 #include <tizen.h>
 #include <telephony_network_type.h>
 
