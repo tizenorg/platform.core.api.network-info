@@ -5,6 +5,7 @@ Release:    10
 Group:      TO_BE/FILLED_IN
 License:    Apache-2.0
 Source0:    %{name}-%{version}.tar.gz
+Source1001: packaging/capi-telephony-network-info.manifest 
 BuildRequires:  cmake
 BuildRequires:  pkgconfig(dlog)
 BuildRequires:  pkgconfig(vconf)
@@ -30,6 +31,7 @@ Requires: %{name} = %{version}-%{release}
 
 
 %build
+cp %{SOURCE1001} .
 MAJORVER=`echo %{version} | awk 'BEGIN {FS="."}{print $1}'`
 cmake . -DCMAKE_INSTALL_PREFIX=/usr -DFULLVER=%{version} -DMAJORVER=${MAJORVER}
 
@@ -46,9 +48,11 @@ rm -rf %{buildroot}
 
 
 %files
+%manifest capi-telephony-network-info.manifest
 %{_libdir}/libcapi-telephony-network-info.so.*
 
 %files devel
+%manifest capi-telephony-network-info.manifest
 %{_includedir}/telephony/*.h
 %{_libdir}/pkgconfig/*.pc
 %{_libdir}/libcapi-telephony-network-info.so
