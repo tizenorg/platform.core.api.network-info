@@ -2,26 +2,26 @@ Name:       capi-telephony-network-info
 Summary:    A Telephony Network Information library in Tizen Native API
 Version: 0.1.0
 Release:    11
-Group:      TO_BE/FILLED_IN
-License:    TO BE FILLED IN
+Group:      C API
+License:    Apache-2.0
 Source0:    %{name}-%{version}.tar.gz
 BuildRequires:  cmake
 BuildRequires:  pkgconfig(dlog)
 BuildRequires:  pkgconfig(vconf)
 BuildRequires:  pkgconfig(glib-2.0)
 BuildRequires:  pkgconfig(capi-base-common)
-Requires(post): /sbin/ldconfig
-Requires(postun): /sbin/ldconfig
 
 %description
+A Telephony Network Information library in Tizen Native API.
 
 
 %package devel
 Summary:  A Telephony Network Information library in Tizen Native API (Development)
-Group:    TO_BE/FILLED_IN
+Group:    C API
 Requires: %{name} = %{version}-%{release}
 
 %description devel
+A Telephony Network Information library in Tizen Native API.
 
 
 
@@ -31,7 +31,7 @@ Requires: %{name} = %{version}-%{release}
 
 %build
 MAJORVER=`echo %{version} | awk 'BEGIN {FS="."}{print $1}'`
-cmake . -DCMAKE_INSTALL_PREFIX=/usr -DFULLVER=%{version} -DMAJORVER=${MAJORVER}
+%cmake . -DFULLVER=%{version} -DMAJORVER=${MAJORVER}
 
 
 make %{?jobs:-j%jobs}
