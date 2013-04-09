@@ -447,33 +447,29 @@ int network_info_unset_service_state_changed_cb()
 	return NETWORK_INFO_ERROR_NONE;	
 }
 
-
 int network_info_set_cell_id_changed_cb(network_info_cell_id_changed_cb callback, void* user_data)
 {
-	int cell_id = 0;
+	int cell_id = -1;
 	int ret = NETWORK_INFO_ERROR_NONE;
 
 	NETWORK_INFO_CHECK_INPUT_PARAMETER(callback);
 
-	ret = network_info_get_cell_id(&cell_id);
-	if( ret != NETWORK_INFO_ERROR_NONE )
-	{
-		LOGE("[%s] %s(0x%08x) : fail to get current CELL ID", __FUNCTION__, __convert_error_code_to_string(ret), ret);
-		return ret;
-	}
-
-	if( cell_id_is_registered == false) 
-	{		
-		if( vconf_notify_key_changed(VCONFKEY_TELEPHONY_CELLID, (vconf_callback_fn)__cell_id_changed_cb_adapter, NULL) != 0 )
-		{
+	if (cell_id_is_registered == false) {	/* Not yet registered */
+		if (vconf_notify_key_changed(VCONFKEY_TELEPHONY_CELLID,
+				(vconf_callback_fn)__cell_id_changed_cb_adapter, NULL) != 0) {
 			LOGE("[%s] OPERATION_FAILED(0x%08x) : fail to register callback function", __FUNCTION__, NETWORK_INFO_ERROR_OPERATION_FAILED);
 			return NETWORK_INFO_ERROR_OPERATION_FAILED;
 		}
-
-		cell_id_is_registered = true;		
+		cell_id_is_registered = true;
 	}
 
-	cell_id_cb.previous_value = cell_id;
+	/* Callback details */
+	ret = network_info_get_cell_id(&cell_id);
+	if (ret == NETWORK_INFO_ERROR_OPERATION_FAILED) {
+		cell_id_cb.previous_value = -1;
+	} else {
+		cell_id_cb.previous_value = cell_id;
+	}
 	cell_id_cb.cb = callback;
 	cell_id_cb.user_data = user_data;
 
@@ -506,25 +502,23 @@ int network_info_set_rssi_changed_cb(network_info_rssi_changed_cb callback, void
 
 	NETWORK_INFO_CHECK_INPUT_PARAMETER(callback);
 
-	ret = network_info_get_rssi(&rssi);
-	if( ret != NETWORK_INFO_ERROR_NONE )
-	{
-		LOGE("[%s] %s(0x%08x) : fail to get current RSSI", __FUNCTION__, __convert_error_code_to_string(ret), ret);
-		return ret;
-	}
-
-	if( rssi_is_registered == false) 
-	{		
-		if( vconf_notify_key_changed(VCONFKEY_TELEPHONY_RSSI, (vconf_callback_fn)__rssi_changed_cb_adapter, NULL) != 0 )
-		{
+	if (rssi_is_registered == false) {	/* Not yet registered */
+		if (vconf_notify_key_changed(VCONFKEY_TELEPHONY_RSSI,
+				(vconf_callback_fn)__rssi_changed_cb_adapter,
+				NULL) != 0) {
 			LOGE("[%s] OPERATION_FAILED(0x%08x) : fail to register callback function", __FUNCTION__, NETWORK_INFO_ERROR_OPERATION_FAILED);
-			return NETWORK_INFO_ERROR_OPERATION_FAILED;
+		return NETWORK_INFO_ERROR_OPERATION_FAILED;
 		}
-
-		rssi_is_registered = true;		
+		rssi_is_registered = true;
 	}
 
-	rssi_cb.previous_value = rssi;
+	/* Callback details */
+	ret = network_info_get_rssi(&rssi);
+	if (ret == NETWORK_INFO_ERROR_OPERATION_FAILED) {
+		rssi_cb.previous_value = NETWORK_INFO_RSSI_0;
+	} else {
+		rssi_cb.previous_value = rssi;
+	}
 	rssi_cb.cb = callback;
 	rssi_cb.user_data = user_data;
 
@@ -550,36 +544,33 @@ int network_info_unset_rssi_changed_cb()
 	return NETWORK_INFO_ERROR_NONE;	
 }
 
-int network_info_set_roaming_state_changed_cb(network_info_roaming_state_changed_cb callback, void* user_data)
+int network_info_set_roaming_state_changed_cb(network_info_roaming_state_changed_cb callback, void *user_data)
 {
 	bool is_roaming = false;
 	int ret = NETWORK_INFO_ERROR_NONE;
 
 	NETWORK_INFO_CHECK_INPUT_PARAMETER(callback);
 
-	ret = network_info_is_roaming(&is_roaming);
-	if( ret != NETWORK_INFO_ERROR_NONE )
-	{
-		LOGE("[%s] %s(0x%08x) : fail to get current roaming state", __FUNCTION__, __convert_error_code_to_string(ret), ret);
-		return ret;
-	}
-
-	if( roaming_is_registered == false) 
-	{		
-		if( vconf_notify_key_changed(VCONFKEY_TELEPHONY_SVC_ROAM, (vconf_callback_fn)__roaming_changed_cb_adapter, NULL) != 0 )
-		{
+	if (roaming_is_registered == false) {	/* Not yet registered */
+		if(vconf_notify_key_changed(VCONFKEY_TELEPHONY_SVC_ROAM,
+				(vconf_callback_fn)__roaming_changed_cb_adapter, NULL) != 0) {
 			LOGE("[%s] OPERATION_FAILED(0x%08x) : fail to register callback function", __FUNCTION__, NETWORK_INFO_ERROR_OPERATION_FAILED);
 			return NETWORK_INFO_ERROR_OPERATION_FAILED;
 		}
-
-		roaming_is_registered = true;		
+		roaming_is_registered = true;
 	}
 
-	roaming_cb.previous_value = is_roaming;
+	/* Callback details */
+	ret = network_info_is_roaming(&is_roaming);
+	if (ret == NETWORK_INFO_ERROR_OPERATION_FAILED) {
+		roaming_cb.previous_value = -1;
+	} else {
+		roaming_cb.previous_value = is_roaming;
+	}
 	roaming_cb.cb = callback;
 	roaming_cb.user_data = user_data;
 
-	return NETWORK_INFO_ERROR_NONE;	
+	return NETWORK_INFO_ERROR_NONE;
 }
 
 int network_info_unset_roaming_state_changed_cb()
