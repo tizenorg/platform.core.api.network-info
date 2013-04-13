@@ -1,9 +1,8 @@
-
 # Package Information for pkg-config
 
 prefix=@PREFIX@
 exec_prefix=/usr
-libdir=/usr/lib
+libdir=@LIB_INSTALL_DIR@
 includedir=/usr/include/telephony
 
 Name: @PC_NAME@
