@@ -5,6 +5,7 @@ Release:    11
 Group:      C API
 License:    Apache-2.0
 Source0:    %{name}-%{version}.tar.gz
+Source1001: 	capi-telephony-network-info.manifest
 BuildRequires:  cmake
 BuildRequires:  pkgconfig(dlog)
 BuildRequires:  pkgconfig(vconf)
@@ -27,6 +28,7 @@ A Telephony Network Information library in Tizen Native API.
 
 %prep
 %setup -q
+cp %{SOURCE1001} .
 
 
 %build
@@ -46,10 +48,11 @@ rm -rf %{buildroot}
 
 
 %files
-%manifest capi-telephony-network-info.manifest
+%manifest %{name}.manifest
 %{_libdir}/libcapi-telephony-network-info.so.*
 
 %files devel
+%manifest %{name}.manifest
 %{_includedir}/telephony/*.h
 %{_libdir}/pkgconfig/*.pc
 %{_libdir}/libcapi-telephony-network-info.so
