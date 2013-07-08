@@ -1,0 +1,8 @@
+Change-Id: Ief4e98a2c9187bf5801515e2e4c2388d49b34aa5
+Code-Review+2: Ryan Ware <ware@linux.intel.com>
+Verified+1: Ryan Ware <ware@linux.intel.com>
+Submitted-by: Ryan Ware <ware@linux.intel.com>
+Submitted-at: Mon, 08 Jul 2013 10:06:44 -0700
+Reviewed-on: https://review.tizen.org/gerrit/4548
+Project: platform/core/api/network-info
+Branch: refs/heads/tizen
