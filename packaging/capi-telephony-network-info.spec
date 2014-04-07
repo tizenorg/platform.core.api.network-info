@@ -1,7 +1,11 @@
+%define major 3
+%define minor 0
+%define patchlevel 1
+
 Name:       capi-telephony-network-info
 Summary:    A Telephony Network Information library in Tizen Native API
-Version: 0.1.0
-Release:    11
+Version:    %{major}.%{minor}.%{patchlevel}
+Release:    1
 Group:      C API
 License:    Apache-2.0
 Source0:    %{name}-%{version}.tar.gz
