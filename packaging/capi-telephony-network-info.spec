@@ -1,6 +1,6 @@
-%define major 3
-%define minor 0
-%define patchlevel 1
+%define major 0
+%define minor 1
+%define patchlevel 0
 
 Name:       capi-telephony-network-info
 Summary:    A Telephony Network Information library in Tizen Native API
